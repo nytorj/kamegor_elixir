@@ -16,6 +16,8 @@
     put "/profiles/me/seller", ProfileController, :update_seller"
     get "/map/sellers", MapController, :sellers
     post "/location", ProfileController, :update_location
+    channel "map:*", MapChannel
+
 
 
 

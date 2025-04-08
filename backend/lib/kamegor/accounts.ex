@@ -70,6 +70,15 @@
   end
 
   @doc """
+  Returns the user with the given ID, preloading the profile.
+  Returns nil if no user is found.
+  """
+  def get_user_by_id(id) do
+    Repo.get(User, id)
+    |> Repo.preload(:profile)
+  end
+
+  @doc """
   Authenticates a user by email and password.
   Returns the user if authentication is successful, otherwise nil.
   """
@@ -91,6 +100,14 @@
   """
   def update_profile_seller(%Profile{} = profile, attrs) do
     Profile.seller_changeset(profile, attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a profile's presence status.
+  """
+  def update_presence_status(%Profile{} = profile, status) do
+    Profile.presence_changeset(profile, %{presence_status: status})
     |> Repo.update()
   end
 

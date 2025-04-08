@@ -1,4 +1,4 @@
-<![CDATA[defmodule Kamegor.Accounts.Profile do
+defmodule Kamegor.Accounts.Profile do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -7,15 +7,16 @@
 
   # Define the schema matching the profiles table
   schema "profiles" do
-    field :username, :string
-    field :description, :text
-    field :is_seller, :boolean, default: false
-    field :rating_avg, :float, default: 0.0
-    field :presence_status, :string, default: "offline"
-    field :location_geom, Geo.PostGIS.Geometry # Using PostGIS geometry type
+    field(:username, :string)
+    field(:description, :text)
+    field(:is_seller, :boolean, default: false)
+    field(:rating_avg, :float, default: 0.0)
+    field(:presence_status, :string, default: "offline")
+    # Using PostGIS geometry type
+    field(:location_geom, Geo.PostGIS.Geometry)
 
     # A profile belongs to a user
-    belongs_to :user, User
+    belongs_to(:user, User)
 
     timestamps()
   end
@@ -25,13 +26,22 @@
   """
   def changeset(profile \\ %__MODULE__{}, attrs) do
     profile
-    |> cast(attrs, [:username, :description, :is_seller, :rating_avg, :presence_status, :location_geom, :user_id])
+    |> cast(attrs, [
+      :username,
+      :description,
+      :is_seller,
+      :rating_avg,
+      :presence_status,
+      :location_geom,
+      :user_id
+    ])
     |> validate_required([:username, :user_id])
     |> unique_constraint(:username)
     |> unique_constraint(:user_id)
     |> foreign_key_constraint(:user_id)
     # Basic validation for presence status (can be expanded later)
     |> validate_inclusion(:presence_status, ["offline", "online", "streaming"])
+
     # Add validation for location_geom if needed (e.g., ensure it's a point)
   end
 
@@ -52,13 +62,20 @@
     # We need to convert this to a Geo.Point for the location_geom field
     case Map.get(attrs, :latitude), Map.get(attrs, :longitude) do
       {lat, lon} when is_number(lat) and is_number(lon) ->
-        point = %Geo.Point{coordinates: {lon, lat}, srid: 4326} # WGS 84
+        # WGS 84
+        point = %Geo.Point{coordinates: {lon, lat}, srid: 4326}
+
         profile
         |> cast(%{location_geom: point}, [:location_geom])
-        # Add validation if needed
+
+      # Add validation if needed
       _ ->
         # Add an error if lat/lon are missing or invalid
-        add_error(profile |> cast(attrs, []), :location_geom, "Invalid latitude/longitude provided")
+        add_error(
+          profile |> cast(attrs, []),
+          :location_geom,
+          "Invalid latitude/longitude provided"
+        )
     end
   end
 
@@ -72,4 +89,3 @@
     |> validate_inclusion(:presence_status, ["offline", "online", "streaming"])
   end
 end
-]]>

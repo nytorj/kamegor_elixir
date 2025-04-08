@@ -3,6 +3,7 @@
 
   alias Kamegor.Accounts
   alias Kamegor.Accounts.Profile
+  alias KamegorWeb.Endpoint # Added for broadcast
 
   action_fallback KamegorWeb.FallbackController
 
@@ -15,6 +16,7 @@
 
       case Accounts.update_profile_seller(profile, seller_params) do
         {:ok, updated_profile} ->
+          # TODO: Broadcast presence/status change if is_seller toggled?
           conn
           |> put_status(:ok)
           |> render(KamegorWeb.ProfileJSON, "profile.json", profile: updated_profile)
@@ -41,21 +43,30 @@
          user when not is_nil(user) <- Accounts.get_user_by_email(user_id),
          profile when not is_nil(profile) <- user.profile do
 
-      point = %Geo.Point{coordinates: {lon, lat}, srid: 4326}
+      # Ensure only sellers can update location
+      if profile.is_seller do
+        changeset = Profile.location_changeset(profile, %{latitude: lat, longitude: lon})
 
-      changeset = Profile.location_changeset(profile, %{latitude: lat, longitude: lon})
+        case Accounts.Repo.update(changeset) do
+          {:ok, updated_profile} ->
+            # Broadcast the location update
+            broadcast_location_update(updated_profile)
 
-      case Accounts.Repo.update(changeset) do
-        {:ok, updated_profile} ->
-          conn
-          |> put_status(:ok)
-          |> render(KamegorWeb.ProfileJSON, "profile.json", profile: updated_profile)
+            conn
+            |> put_status(:ok)
+            |> render(KamegorWeb.ProfileJSON, "profile.json", profile: updated_profile)
 
-        {:error, changeset} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> put_view(json: KamegorWeb.ChangesetJSON)
-          |> render(:error, changeset: changeset)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> put_view(json: KamegorWeb.ChangesetJSON)
+            |> render(:error, changeset: changeset)
+        end
+      else
+        # User is not a seller, forbid location update
+        conn
+        |> put_status(:forbidden)
+        |> json(%{error: "User is not a seller"})
       end
     else
       _ ->
@@ -76,6 +87,16 @@
       {float, _} -> {:ok, float}
       _ -> {:error, :invalid_float}
     end
+  end
+
+  defp broadcast_location_update(%Profile{} = profile) do
+    # For MVP, broadcast to a general topic. Clients/MapChannel can filter later.
+    # Ideally, broadcast only to relevant viewport topics.
+    payload = %{
+      event: "location_update",
+      seller: KamegorWeb.MapJSON.render("sellers.json", sellers: [profile]).data |> List.first() # Reuse MapJSON rendering
+    }
+    Endpoint.broadcast("map_updates", "location_update", payload)
   end
 end
 ]]>

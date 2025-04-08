@@ -59,11 +59,11 @@
         *   [x] Setup basic API routing (`lib/kamegor_web/router.ex`).
         *   [ ] Add basic CORS handling.
     *   [ ] **Frontend (React Native):**
-        *   [ ] Implement Signup Screen UI.
-        *   [ ] Implement Login Screen UI.
-        *   [ ] Implement API client module to interact with backend auth endpoints.
+        *   [x] Implement Signup Screen UI.
+        *   [x] Implement Login Screen UI.
+        *   [x] Implement API client module to interact with backend auth endpoints.
         *   [ ] Implement secure token storage (e.g., react-native-keychain).
-        *   [ ] Implement basic authenticated routing (navigate to main app view after login).
+        *   [x] Implement basic authenticated routing (navigate to main app view after login).
         *   [ ] Implement basic Profile Settings screen (view basic info).
 
 ---
@@ -80,9 +80,9 @@
             *   [x] Track user connections via `Presence.track/3`. Store user ID, device ID, initial status (`online`).
             *   [x] Handle user disconnects (`Presence.untrack/2`) to set status `offline`.
         *   [x] Implement API endpoint to fetch Sellers within map viewport (`GET /api/map/sellers?lat=...&lon=...&radius=...`): Use PostGIS spatial query (`ST_DWithin`), filter by `is_seller=true` and presence status (`online` or `streaming`). Return necessary profile info (id, username, pic_url, rating, status, location).
-        *   [ ] Implement WebSocket endpoint/channel for map clients to subscribe to real-time Seller presence/location updates within their viewport. Broadcast updates when tracked presence changes (join, leave, status update) or location changes.
+        *   [x] Implement WebSocket endpoint/channel for map clients to subscribe to real-time Seller presence/location updates within their viewport. Broadcast updates when tracked presence changes (join, leave, status update) or location changes.
         *   [x] Implement API endpoint for Sellers to update their current location (`POST /api/location`): Update Profile's location_geom (PostGIS point). Broadcast this change via WebSocket.
-        *   [ ] Update Profile model to include `presence_status` (offline, online, streaming). Update this based on Presence tracking.
+        *   [x] Update Profile model to include `presence_status` (offline, online, streaming). Update this based on Presence tracking.
     *   [ ] **Frontend (React Native):**
         *   [ ] Implement Profile Settings screen section for Seller Opt-in (toggle, description input), calling the backend endpoint.
         *   [ ] **Implement Map Screen:**
