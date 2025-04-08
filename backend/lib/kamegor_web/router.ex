@@ -15,6 +15,8 @@
     post "/users", UserController, :create
     put "/profiles/me/seller", ProfileController, :update_seller"
     get "/map/sellers", MapController, :sellers
+    post "/location", ProfileController, :update_location
+
 
 
     channel "/presence", PresenceChannel # Mount PresenceChannel on /api/presence
