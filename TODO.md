@@ -20,7 +20,7 @@
 
 *   **TODO:**
     *   [ ] **Project Management:**
-        *   [ ] Setup Git repository (e.g., GitHub, GitLab).
+        *   [x] Setup Git repository (e.g., GitHub, GitLab).
         *   [ ] Setup project board (e.g., Jira, Trello, GitHub Projects).
         *   [ ] Define branching strategy (e.g., Gitflow).
     *   [ ] **Tech Stack Decisions:**
@@ -74,12 +74,12 @@
 
 *   **TODO:**
     *   [ ] **Backend (Elixir/Phoenix):**
-        *   [ ] Implement "Become a Seller" API endpoint (`PUT /api/profiles/me/seller`): Toggle `is_seller` boolean, update `seller_description`.
+        *   [x] Implement "Become a Seller" API endpoint (`PUT /api/profiles/me/seller`): Toggle `is_seller` boolean, update `seller_description`.
         *   [ ] **Integrate Phoenix Presence:**
-            *   [ ] Setup Presence Channel (`lib/kamegor_web/channels/presence_channel.ex`).
-            *   [ ] Track user connections via `Presence.track/3`. Store user ID, device ID, initial status (`online`).
-            *   [ ] Handle user disconnects (`Presence.untrack/2`) to set status `offline`.
-        *   [ ] Implement API endpoint to fetch Sellers within map viewport (`GET /api/map/sellers?lat=...&lon=...&radius=...`): Use PostGIS spatial query (`ST_DWithin`), filter by `is_seller=true` and presence status (`online` or `streaming`). Return necessary profile info (id, username, pic_url, rating, status, location).
+            *   [x] Setup Presence Channel (`lib/kamegor_web/channels/presence_channel.ex`).
+            *   [x] Track user connections via `Presence.track/3`. Store user ID, device ID, initial status (`online`).
+            *   [x] Handle user disconnects (`Presence.untrack/2`) to set status `offline`.
+        *   [x] Implement API endpoint to fetch Sellers within map viewport (`GET /api/map/sellers?lat=...&lon=...&radius=...`): Use PostGIS spatial query (`ST_DWithin`), filter by `is_seller=true` and presence status (`online` or `streaming`). Return necessary profile info (id, username, pic_url, rating, status, location).
         *   [ ] Implement WebSocket endpoint/channel for map clients to subscribe to real-time Seller presence/location updates within their viewport. Broadcast updates when tracked presence changes (join, leave, status update) or location changes.
         *   [ ] Implement API endpoint for Sellers to update their current location (`POST /api/location`): Update Profile's location_geom (PostGIS point). Broadcast this change via WebSocket.
         *   [ ] Update Profile model to include `presence_status` (offline, online, streaming). Update this based on Presence tracking.

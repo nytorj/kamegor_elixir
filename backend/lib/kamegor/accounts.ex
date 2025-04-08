@@ -86,6 +86,34 @@
     end
   end
 
+  @doc """
+  Updates a profile's seller status and description.
+  """
+  def update_profile_seller(%Profile{} = profile, attrs) do
+    Profile.seller_changeset(profile, attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Lists sellers within a given viewport (radius from a central point).
+  """
+  def list_sellers_in_viewport(%Geo.Point{} = user_location, radius_meters) do
+    # Convert radius to meters if needed (assuming radius_meters is already in meters)
+    # Note: ST_DWithin with geography type is more accurate for lat/lon but requires casting.
+    # Using geometry and approximate degree conversion for simplicity here.
+    radius_degrees = radius_meters / 111_000  # Approximate meters to degrees conversion
+
+    # Construct PostGIS query using ST_DWithin
+    query = from p in Profile,
+      join: u in assoc(p, :user), # Preload user
+      where: p.is_seller == true,
+      where: p.presence_status in ["online", "streaming"],
+      where: fragment("ST_DWithin(?, ?, ?)", p.location_geom, ^user_location, ^radius_degrees), # Spatial filter
+      select: p
+
+    Repo.all(query)
+  end
+
   # Add other context functions here (get_user!, update_user, etc.) as needed
 end
 ]]>

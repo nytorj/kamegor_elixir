@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamegor Project Plan</title>
+    <!-- Basic Styling - In a real project, this would be a separate CSS file -->
+    <style>
+        /* ... (Keep all previous CSS styles from the first response) ... */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Light background */
+            color: #343a40; /* Dark grey text */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* --- Utility Classes --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 60px 0;
+            border-bottom: 1px solid #e9ecef; /* Subtle separator */
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #0d6efd; /* Primary blue */
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .section-title::after { /* Underline effect */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #6c757d; /* Secondary grey */
+            border-radius: 2px;
+        }
+
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #17a2b8; /* Info teal */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        ul li::before { /* Custom bullet points */
+            content: '✓'; /* Checkmark or could use an icon font */
+            position: absolute;
+            left: 0;
+            color: #28a745; /* Success green */
+            font-weight: bold;
+        }
+
+        /* --- Header / Hero Section --- */
+        .hero {
+            background: linear-gradient(135deg, #0d6efd 0%, #17a2b8 100%); /* Gradient background */
+            color: #fff;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden; /* For animations */
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            /* Animation: Subtle text reveal maybe */
+            animation: fadeInDown 1s ease-out;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+             /* Animation: Subtle text reveal maybe */
+            animation: fadeInUp 1s ease-out 0.5s;
+            animation-fill-mode: backwards; /* Start hidden */
+        }
+        .hero-graphic {
+            /* Placeholder for a nice visual - e.g., abstract map/connection lines */
+            /* Could be an SVG animation */
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto 0;
+            opacity: 0.8;
+            /* Animation: Gentle pulse or float */
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        /* --- App Description Section --- */
+        .app-description .content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        .app-description .text {
+            flex: 1;
+             /* Animation: Fade in from left */
+            animation: fadeInLeft 1s ease-out;
+        }
+        .app-description .graphic {
+            flex: 0 0 300px; /* Fixed width for graphic */
+            text-align: center;
+             /* Animation: Fade in from right */
+            animation: fadeInRight 1s ease-out;
+        }
+        .app-description .graphic img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- Core Flow Section --- */
+        .core-flow {
+            background-color: #eef1f5; /* Slightly different background */
+        }
+        .flow-steps {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            text-align: center;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .flow-step {
+            flex: 1;
+            min-width: 180px; /* Ensure steps have some width */
+            padding: 20px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: relative;
+             /* Animation: Staggered fade-in */
+             opacity: 0; /* Start hidden */
+             animation: fadeInUp 0.8s ease-out forwards; /* Forwards keeps final state */
+        }
+        /* Stagger animation delay */
+        .flow-step:nth-child(1) { animation-delay: 0.2s; }
+        .flow-step:nth-child(2) { animation-delay: 0.4s; }
+        .flow-step:nth-child(3) { animation-delay: 0.6s; }
+        .flow-step:nth-child(4) { animation-delay: 0.8s; }
+
+        .flow-step .icon {
+            font-size: 2.5rem; /* Placeholder for actual icons */
+            color: #0d6efd;
+            margin-bottom: 15px;
+        }
+        .flow-step h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .flow-step p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        /* Arrow connector - pseudo-element */
+        .flow-step:not(:last-child)::after {
+             content: '→'; /* Simple arrow, could be SVG/Icon */
+             position: absolute;
+             top: 50%;
+             right: -25px; /* Adjust based on gap */
+             transform: translateY(-50%);
+             font-size: 2rem;
+             color: #adb5bd;
+        }
+         /* Hide arrow on wrap */
+        @media (max-width: 992px) {
+             .flow-step:not(:last-child)::after { display: none; }
+        }
+
+        /* --- Scope Section --- */
+        .scope-columns {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap; /* Wrap on smaller screens */
+        }
+        .scope-column {
+            flex: 1;
+            min-width: 300px; /* Ensure columns have minimum width */
+            padding: 25px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            /* Animation: Example - Zoom in */
+            animation: zoomIn 0.8s ease-out;
+        }
+        .scope-column h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid;
+            padding-bottom: 10px;
+        }
+        .scope-column.in-scope h3 { color: #28a745; border-color: #28a745;}
+        .scope-column.out-scope h3 { color: #dc3545; border-color: #dc3545;}
+        .scope-column.in-scope ul li::before { color: #28a745; content: '✓'; }
+        .scope-column.out-scope ul li::before { color: #dc3545; content: '✗'; }
+
+        /* --- Key Features Section --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            /* Animation: Fade in */
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            /* Potential hover effect */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .feature-card h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .feature-card h4 .icon { /* Placeholder for feature icon */
+             margin-right: 10px;
+             font-size: 1.5rem; /* Example */
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #6c757d;
+        }
+        .feature-card ul { margin-top: 15px; }
+        .feature-card ul li::before { content: '•'; color: #17a2b8; } /* Different bullet */
+
+         /* Stagger feature card animation */
+        .features-grid .feature-card:nth-child(odd) { animation-delay: 0.1s; }
+        .features-grid .feature-card:nth-child(even) { animation-delay: 0.2s; }
+
+        /* --- Roadmap Section --- */
+        .roadmap-section {
+            background-color: #f0f4f8; /* Slightly different background for emphasis */
+        }
+        .roadmap-timeline {
+            position: relative;
+            max-width: 800px; /* Adjust as needed */
+            margin: 0 auto;
+        }
+        .roadmap-timeline::after { /* The vertical timeline bar */
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #adb5bd; /* Timeline color */
+            top: 0;
+            bottom: 0;
+            left: 60%;
+            margin-left: -5px;
+             /* Animation: Draw the line */
+            animation: drawLine 2s ease-out forwards;
+            transform-origin: top;
+        }
+        .roadmap-phase {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+             /* Animation: Slide in phases */
+             opacity: 0;
+             animation: slideInPhase 0.8s ease-out forwards;
+        }
+        /* Stagger phase animations */
+        .roadmap-phase:nth-child(odd) { animation-delay: 0.5s; }
+        .roadmap-phase:nth-child(even) { animation-delay: 1s; }
+        /* Alternating sides */
+        .roadmap-phase.left {
+            left: 0;
+        }
+        .roadmap-phase.right {
+            left: 50%;
+        }
+        /* Phase marker on timeline */
+        .roadmap-phase::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            right: -8px; /* Adjust to center on line */
+            background-color: white;
+            border: 3px solid #0d6efd; /* Primary color */
+            top: 25px; /* Adjust vertical position */
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .roadmap-phase.right::after {
+            left: -8px;
+        }
+        .roadmap-phase .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .roadmap-phase h4 { /* Phase title */
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-bottom: 5px;
+        }
+        .roadmap-phase .duration {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block; /* Ensure it takes its own line */
+        }
+        .roadmap-phase .goal {
+            font-style: italic;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+         .roadmap-phase .focus {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .roadmap-phase .focus strong { /* Highlight key tech/area */
+             color: #343a40;
+             font-weight: 600;
+        }
+
+        /* Responsive Timeline */
+        @media screen and (max-width: 768px) {
+            .roadmap-timeline::after {
+                left: 31px; /* Move line to the left */
+            }
+            .roadmap-phase {
+                width: 100%;
+                padding-left: 70px; /* Space for line and marker */
+                padding-right: 25px;
+            }
+            .roadmap-phase.left, .roadmap-phase.right {
+                left: 0%; /* Stack all on one side */
+            }
+            .roadmap-phase::after {
+                left: 15px; /* Position marker on the left line */
+            }
+            .roadmap-phase.right::after {
+                left: 15px; /* Same for right-aligned ones */
+            }
+        }
+
+        /* --- Technology Stack --- */
+        .tech-stack {
+            text-align: center;
+        }
+        .tech-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .tech-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Animation: Bounce in */
+            animation: bounceIn 1s ease-out;
+        }
+        .tech-logo img { /* Placeholder for actual logos */
+            height: 60px;
+            margin-bottom: 10px;
+            filter: grayscale(50%); /* Subtle grey */
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        .tech-logo span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .tech-logo:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+        .tech-note {
+            margin-top: 30px;
+            font-style: italic;
+            color: #6c757d;
+        }
+
+
+        /* --- Risks & Mitigation --- */
+        .risks-section {
+             background-color: #fdf7f7; /* Light warning background */
+        }
+        .risks-section .section-title { color: #dc3545; } /* Warning red */
+        .risks-section .section-title::after { background-color: #f8d7da; }
+
+        .risk-item {
+            background: #fff;
+            border-left: 5px solid #dc3545; /* Red accent */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+             /* Animation: Slide in from left */
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+         /* Stagger risk item animation */
+        .risk-item:nth-child(1) { animation-delay: 0.1s; }
+        .risk-item:nth-child(2) { animation-delay: 0.2s; }
+        .risk-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .risk-item h4 {
+            color: #dc3545;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .risk-item strong { /* Mitigation label */
+            color: #28a745; /* Green for mitigation */
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: #343a40; /* Dark footer */
+            color: #adb5bd; /* Light grey text */
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* --- Keyframe Animations --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes slideInLeft {
+             from { opacity: 0; transform: translateX(-30px); }
+             to { opacity: 1; transform: translateX(0); }
+        }
+         @keyframes slideInPhase { /* Specific animation for roadmap phases */
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes drawLine { /* For the timeline bar */
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .section-title { font-size: 2rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1rem; }
+            .app-description .content { flex-direction: column; }
+            .app-description .graphic { margin-top: 20px; flex-basis: auto; }
+            .scope-columns { flex-direction: column; }
+            .features-grid { grid-template-columns: 1fr; /* Stack cards */ }
+            .flow-steps { flex-direction: column; align-items: stretch; }
+            .flow-step:not(:last-child)::after { display: none; /* Hide arrows when stacked */ }
+            .flow-step { margin-bottom: 20px; }
+            /* Responsive Timeline adjustments already included in .roadmap-timeline styles */
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+             <!-- [Image: Abstract graphic representing network connections / map pins / video play icon - subtly animated] -->
+             <img src="placeholder-hero-graphic.svg" alt="Kamegor Concept Graphic" class="hero-graphic">
+            <h1>Kamegor Project Plan</h1>
+            <p>A refined vision for a location-based, P2P live video marketplace connecting Buyers with Sellers broadcasting from unique locations.</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- App Description Section -->
+        <section id="description" class="section app-description">
+            <div class="container">
+                 <h2 class="section-title">App Description (Refined)</h2>
+                 <div class="content">
+                     <div class="text">
+                         <p><strong>Kamegor</strong> is evolving into a dynamic cross-platform mobile marketplace for live, peer-to-peer (P2P) video streams.</p>
+                         <p>The core refinement centers around <strong>Seller activation and visibility</strong>. Users can explicitly opt-in via their profile to become "Sellers". Once activated and online, their profile picture appears as an <strong>interactive marker on the main map</strong> at their current location.</p>
+                         <p>"Buyers" browse the map and can tap these markers to view a <strong>detailed Seller profile</strong>. This profile acts as a central hub, showcasing the Seller's description, rating, reputation tier, transaction history (initially DB-logged, exploring blockchain concepts for future trust enhancement), and crucially, their <strong>real-time status (Online / Streaming / Offline)</strong>.</p>
+                         <p>If a Seller is broadcasting live, Buyers can initiate a <strong>paid, per-minute viewing session</strong> directly from the profile, connecting via secure P2P WebRTC. The entire real-time ecosystem – map updates, user presence, signaling, and transactions – is powered by a robust Elixir/Phoenix backend.</p>
+                     </div>
+                     <div class="graphic">
+                          <!-- [Image: Mockup showing the map view with profile pic markers, maybe one highlighted/pulsing to show 'Streaming'] -->
+                         <img src="placeholder-map-mockup.png" alt="Kamegor Map Interface Mockup">
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+         <!-- Core Interaction Flow -->
+        <section id="flow" class="section core-flow">
+            <div class="container">
+                <h2 class="section-title">Core User Interaction Flow</h2>
+                <div class="flow-steps">
+                    <!-- ... (Flow steps remain the same) ... -->
+                    <div class="flow-step">
+                        <!-- [Icon: User Opt-in / Profile Setting] -->
+                        <div class="icon">👤</div>
+                        <h4>1. Seller Activation</h4>
+                        <p>User opts-in via profile settings to become a Seller.</p>
+                    </div>
+                    <div class="flow-step">
+                         <!-- [Icon: Map / Pin / Globe] -->
+                        <div class="icon">📍</div>
+                        <h4>2. Discover Sellers</h4>
+                        <p>Buyer browses map, sees online Seller markers (profile pics).</p>
+                    </div>
+                    <div class="flow-step">
+                         <!-- [Icon: Profile / ID Card] -->
+                        <div class="icon">🆔</div>
+                        <h4>3. View Profile</h4>
+                        <p>Buyer taps marker, views Seller's detailed profile & real-time status.</p>
+                    </div>
+                    <div class="flow-step">
+                         <!-- [Icon: Play Button / Video Camera] -->
+                        <div class="icon">▶️</div>
+                        <h4>4. Watch Live</h4>
+                        <p>If Seller is "Streaming", Buyer initiates paid P2P viewing session.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Scope Section -->
+        <section id="scope" class="section">
+            <div class="container">
+                <h2 class="section-title">MVP Scope (Refined)</h2>
+                <div class="scope-columns">
+                    <!-- ... (Scope columns remain the same) ... -->
+                     <div class="scope-column in-scope">
+                        <h3>✅ In Scope (MVP)</h3>
+                        <ul>
+                            <li>User Auth & Profile (incl. Seller toggle/desc)</li>
+                            <li>Map Interface (Online Seller markers, Profile pics, Streaming distinction, Clustering)</li>
+                            <li>Seller Profile Screen (Details, Status, History, Conditional Watch Button)</li>
+                            <li>Streamer "Go Live" Functionality</li>
+                            <li>Viewer Map Browsing & Profile Viewing</li>
+                            <li>P2P WebRTC Video Connection (1-to-1)</li>
+                            <li>Per-Minute Billing & Credits System</li>
+                            <li>Post-Stream Rating System</li>
+                            <li>Basic Reputation Score Display</li>
+                            <li>Elixir Backend (API, Signaling, Presence Tracking, Billing, DB)</li>
+                            <li>Essential Admin & Moderation Tools</li>
+                        </ul>
+                    </div>
+                    <div class="scope-column out-scope">
+                        <h3>❌ Out of Scope (MVP)</h3>
+                         <ul>
+                            <li>Pre-recorded Profile Videos</li>
+                            <li>Detailed Blockchain Transaction View</li>
+                            <li>Displaying Buyer Ratings Given by Seller</li>
+                            <li>Transaction Comments</li>
+                            <li>"Request Stream" / "Notify Me" Features</li>
+                            <li>Multi-Viewer Streams</li>
+                            <li>In-Stream Chat</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features Section -->
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="section-title">Key MVP Features Breakdown</h2>
+                <div class="features-grid">
+                    <!-- ... (Feature cards remain the same) ... -->
+                    <div class="feature-card">
+                        <h4><span class="icon">👤</span>FE1: User Auth & Profile</h4>
+                        <p>Standard authentication plus Seller-specific fields (`is_seller`, `seller_description`) and profile settings UI for activation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><span class="icon">🗺️</span>FE2: Map Interface</h4>
+                        <p>Displays online Sellers using profile pics. Distinguishes actively streaming Sellers. Includes clustering and marker tap previews.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">💡</span>FE3: Seller Experience</h4>
+                        <p>Profile setup, "Go Live" button triggering `streaming` status change, active stream screen, and status updates upon stopping/going offline.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">👀</span>FE4: Viewer Experience</h4>
+                        <p>Tap marker -> View Profile. Profile shows details, real-time status, transaction history, and a conditional "Watch Live" button based on Seller status.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4><span class="icon">⭐</span>FE5: Post-Stream Rating</h4>
+                        <p>Standard mechanism for Buyers to rate Sellers after a paid viewing session concludes.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">💰</span>FE6: Real-time Billing</h4>
+                        <p>Per-minute credit deduction logic triggered when initiating a "Watch Live" session.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">🏆</span>FE7: Reputation System</h4>
+                        <p>Seller Profile displays an aggregated score/rating, contextualized by the transaction history.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">🪙</span>FE8: Virtual Currency</h4>
+                        <p>Internal "Credits" system for handling payments for stream viewing.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">⚙️</span>BE1: Backend API</h4>
+                        <p>Elixir/Phoenix endpoints for profile updates, fetching Seller data (incl. history), and providing map data (filtered for online/streaming Sellers).</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">⚡</span>BE2: Real-time Services</h4>
+                        <p><strong>CRITICAL:</strong> Robust User Presence (`offline`, `online`, `streaming`) via Phoenix Presence. Broadcasts status changes. WebRTC Signaling & Billing Engine.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">🛡️</span>BE3: Trust Layer (Initial)</h4>
+                        <p>Database logging of stream session details (duration, participants, rating) for display on profiles.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h4><span class="icon">🛠️</span>BE4: Admin Panel</h4>
+                        <p>Tools for managing Seller flags/descriptions, monitoring presence, and basic moderation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                <!-- ========================= -->
+        <!-- == NEW Roadmap Section == -->
+        <!-- ========================= -->
+        <section id="roadmap" class="section roadmap-section">
+            <div class="container">
+                <h2 class="section-title">MVP Development Roadmap</h2>
+                <div class="roadmap-timeline">
+
+                    <!-- Phase 0 -->
+                    <div class="roadmap-phase"> <!-- No .left/.right class needed on phase directly -->
+                        <div class="marker"></div> <!-- Marker Element -->
+                        <div class="content-wrapper"> <!-- Wrapper for positioning -->
+                            <div class="content">
+                                <h4>Phase 0: Foundation & Design</h4>
+                                <span class="duration">Est. 1-2 Weeks</span>
+                                <p class="goal">Establish project structure, finalize tech stack, and create detailed designs.</p>
+                                <p class="focus">Focus: Git setup, Frontend/Backend choices, DB schema, API specs, UI/UX mockups, Environment setup.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phase 1 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 1: Backend Foundation & Auth</h4>
+                                <span class="duration">Est. 2-3 Weeks</span>
+                                <p class="goal">Implement secure user accounts and basic API structure.</p>
+                                <p class="focus">Focus: <strong>Ecto</strong> migrations (User/Profile), Registration/Login APIs (<strong>Phoenix</strong>), JWT/Token Auth, Basic Frontend Screens (Signup/Login).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phase 2 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 2: Presence, Seller Opt-in & Map Basics</h4>
+                                <span class="duration">Est. 3-4 Weeks</span>
+                                <p class="goal">Display online Sellers on the map based on real-time presence.</p>
+                                <p class="focus">Focus: Seller activation API, <strong>Phoenix Presence</strong> integration, Map screen (<strong>React Native</strong>), Seller markers, Location updates (<strong>PostGIS</strong>), Map Viewport API.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Phase 3 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 3: Seller Profile & Stream Init Flow</h4>
+                                <span class="duration">Est. 2 Weeks</span>
+                                <p class="goal">Enable viewing detailed Seller profiles and conditional "Watch Live" UI.</p>
+                                <p class="focus">Focus: Seller Profile API/Screen, Real-time status display, Conditional UI logic for stream initiation.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Phase 4 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 4: WebRTC Core Implementation</h4>
+                                <span class="duration">Est. 4-6 Weeks (High Complexity)</span>
+                                <p class="goal">Establish basic 1-to-1 P2P video streaming.</p>
+                                <p class="focus">Focus: <strong>WebRTC</strong> library integration (RN), Signaling Channel (<strong>Phoenix Channels</strong>), SDP/ICE handling, STUN/TURN config, Streamer/Viewer UIs.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Phase 5 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 5: Virtual Currency & Billing</h4>
+                                <span class="duration">Est. 3-4 Weeks</span>
+                                <p class="goal">Implement Credits system and charge per minute for streams.</p>
+                                <p class="focus">Focus: Credit Ledger DB/API, Atomic credit transactions, Per-minute billing logic (<strong>GenServer/Oban</strong>), Payment gateway integration (basic).</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Phase 6 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 6: Ratings & Transaction History</h4>
+                                <span class="duration">Est. 2 Weeks</span>
+                                <p class="goal">Allow stream ratings and display history on profiles.</p>
+                                <p class="focus">Focus: Ratings DB/API, Stream session logging, Update average rating, Display history on profile.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phase 7 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 7: Admin Panel & Moderation</h4>
+                                <span class="duration">Est. 2-3 Weeks</span>
+                                <p class="goal">Provide essential management and moderation tools.</p>
+                                <p class="focus">Focus: Admin UI framework, User management, Stream monitoring/termination, Reporting system.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phase 8 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 8: Testing, Polish & Security</h4>
+                                <span class="duration">Est. 3-4 Weeks</span>
+                                <p class="goal">Ensure MVP stability, performance, security, and usability.</p>
+                                <p class="focus">Focus: Unit/Integration/Manual QA, Performance optimization (Map, WebRTC, DB), Security review, Bug fixing, UI refinement.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Phase 9 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 9: Deployment & Infrastructure</h4>
+                                <span class="duration">Est. 1-2 Weeks</span>
+                                <p class="goal">Prepare and deploy the application to staging/production.</p>
+                                <p class="focus">Focus: Cloud setup (<strong>AWS/GCP/Azure</strong>), Managed DB, CI/CD pipelines, STUN/TURN deployment, App Store setup.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phase 10 -->
+                    <div class="roadmap-phase">
+                         <div class="marker"></div>
+                         <div class="content-wrapper">
+                            <div class="content">
+                                <h4>Phase 10: Launch & Monitoring</h4>
+                                <span class="duration">Est. 1 Week</span>
+                                <p class="goal">Release the MVP and monitor initial performance.</p>
+                                <p class="focus">Focus: App Store submission/release, Monitoring setup (<strong>APM</strong>, errors, logs), Key metric tracking, Initial support.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- /.roadmap-timeline -->
+            </div>
+        </section>
+        <!-- ============================= -->
+        <!-- == END NEW Roadmap Section == -->
+        <!-- ============================= -->
+
+
+        <!-- Technology Stack Section -->
+        <section id="tech" class="section tech-stack">
+            <div class="container">
+                <h2 class="section-title">Technology Stack</h2>
+                 <!-- ... (Tech stack content remains the same) ... -->
+                <p>Leveraging powerful tools for real-time performance and scalability.</p>
+                <div class="tech-logos">
+                     <!-- [Logo: Elixir] -->
+                    <div class="tech-logo">
+                        <img src="placeholder-elixir-logo.svg" alt="Elixir Logo">
+                        <span>Elixir</span>
+                    </div>
+                     <!-- [Logo: Phoenix Framework] -->
+                     <div class="tech-logo">
+                        <img src="placeholder-phoenix-logo.svg" alt="Phoenix Framework Logo">
+                        <span>Phoenix (+ Presence)</span>
+                    </div>
+                     <!-- [Logo: WebRTC] -->
+                     <div class="tech-logo">
+                        <img src="placeholder-webrtc-logo.svg" alt="WebRTC Logo">
+                        <span>WebRTC</span>
+                    </div>
+                     <!-- [Logo: PostgreSQL / Suitable DB] -->
+                     <div class="tech-logo">
+                        <img src="placeholder-db-logo.svg" alt="Database Logo">
+                        <span>PostgreSQL + PostGIS</span> <!-- Added PostGIS here -->
+                    </div>
+                    <!-- [Logo: React Native / Flutter / Native - based on choice] -->
+                     <div class="tech-logo">
+                        <img src="placeholder-mobile-logo.svg" alt="Mobile Platform Logo">
+                        <span>React Native</span> <!-- Assuming RN based on TODO -->
+                    </div>
+                </div>
+                <p class="tech-note"><strong>Phoenix Presence</strong> is key for efficient tracking of `online`/`offline`/`streaming` states.</p>
+                <p class="tech-note">Mobile app likely requires background location permissions ONLY IF Sellers need to be visible while backgrounded (Recommend **requiring foreground app** for MVP due to battery/privacy).</p>
+            </div>
+        </section>
+
+        <!-- Risks & Mitigation Section -->
+        <section id="risks" class="section risks-section">
+            <div class="container">
+                <h2 class="section-title">Risks & Mitigation</h2>
+                 <!-- ... (Risks content remains the same) ... -->
+                 <div class="risk-item">
+                    <h4>⚠️ Privacy (Seller Location Exposure)</h4>
+                    <p>Showing persistent locations of all online Sellers is a significant risk.</p>
+                    <p><strong>Mitigation:</strong>
+                        <ul>
+                            <li><strong>Require App in Foreground:</strong> Only show Sellers on map when app is actively used (MVP).</li>
+                            <li><strong>Location Obfuscation (Recommended):</strong> Show generalized location (e.g., neighborhood level) when 'Online', precise only when 'Streaming'.</li>
+                            <li><strong>Explicit Consent:</strong> Clear opt-in explaining visibility.</li>
+                            <li><strong>Future:</strong> Visibility controls for Sellers.</li>
+                        </ul>
+                    </p>
+                </div>
+                 <div class="risk-item">
+                    <h4>⚠️ Map Performance/Clutter</h4>
+                    <p>A high density of online Sellers could impact map usability and performance.</p>
+                     <p><strong>Mitigation:</strong>
+                        <ul>
+                            <li>Efficient Geospatial Queries (Backend Indexing).</li>
+                            <li>Client-side Map Marker Clustering.</li>
+                            <li>Limit data transfer (only viewport updates).</li>
+                        </ul>
+                    </p>
+                </div>
+                 <div class="risk-item">
+                    <h4>⚠️ State Management Complexity</h4>
+                    <p>Reliably tracking `offline`/`online`/`streaming` across network issues and app lifecycle events is challenging.</p>
+                    <p><strong>Mitigation:</strong>
+                        <ul>
+                            <li>Leverage <strong>Phoenix Presence</strong> robustly.</li>
+                            <li>Careful client-side state logic.</li>
+                            <li>Design for graceful reconnections and state synchronization.</li>
+                        </ul>
+                    </p>
+                </div>
+                 <div class="risk-item"> <!-- Added risk based on Phase 4 -->
+                    <h4>⚠️ WebRTC Complexity & Reliability</h4>
+                    <p>Establishing reliable P2P connections across diverse networks and devices is inherently complex.</p>
+                    <p><strong>Mitigation:</strong>
+                        <ul>
+                            <li>Thorough STUN/TURN server configuration and testing.</li>
+                            <li>Robust signaling logic and error handling.</li>
+                            <li>Extensive testing on various devices and network types (NAT traversal).</li>
+                            <li>Consider managed WebRTC services if self-hosting TURN becomes too burdensome.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 Kamegor Project. All Rights Reserved (Conceptual).</p>
+        </div>
+    </footer>
+
+    <!-- Simple script for triggering animations on scroll (Example using Intersection Observer) -->
+    <!-- In a real app, use a library like AOS or implement more robustly -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Select ALL elements intended for animation, including the new roadmap phases
+            const animatedElements = document.querySelectorAll(
+                'section, .flow-step, .scope-column, .feature-card, .tech-logo, .risk-item, .roadmap-phase .content, .roadmap-timeline::after'
+            );
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        // Check if it's the timeline bar specifically
+                        if(target.classList.contains('roadmap-timeline') && target.tagName === 'DIV') {
+                           // Find the ::after pseudo element style if possible or trigger animation on the parent
+                           // For simplicity, we added animation directly to ::after in CSS
+                           // Make sure the parent animation doesn't conflict or just let CSS handle it
+                        } else {
+                             // Trigger animation by setting play state or changing opacity/transform
+                            target.style.opacity = '1'; // Ensure visible if animation uses it
+                            if (target.style.animationPlayState === 'paused') {
+                                target.style.animationPlayState = 'running';
+                            }
+                        }
+                        observer.unobserve(target); // Animate only once
+                    }
+                });
+            }, {
+                threshold: 0.1 // Adjust threshold as needed
+            });
+
+            animatedElements.forEach(el => {
+                // Initialize elements for animation - Pause CSS animations
+                 const style = window.getComputedStyle(el);
+                 // Special handling for pseudo-elements is tricky with JS alone
+                 // The drawLine animation on ::after relies on CSS @keyframes triggered on visibility
+                 // For element animations:
+                 if (style.animationName && style.animationName !== 'none' && !el.classList.contains('roadmap-timeline')) {
+                     el.style.animationPlayState = 'paused';
+                 }
+                 // Set initial state if needed (e.g., opacity for fade-ins)
+                 // Check if the animation starts with opacity 0 or transform
+                 if (style.animationFillMode === 'forwards' || style.animationName.includes('fadeIn') || style.animationName.includes('slideIn') || style.animationName.includes('zoomIn') || style.animationName.includes('bounceIn')) {
+                    // Opacity set by animation itself usually, but safer to ensure 0 if paused
+                    // el.style.opacity = '0'; // Careful: this might override the first frame of animation
+                 }
+
+                observer.observe(el);
+
+                // If observing the timeline container for the ::after animation
+                if (el.classList.contains('roadmap-timeline')) {
+                    // The ::after animation will start based on the container being visible
+                    // No extra JS needed if animation is setup correctly in CSS
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
