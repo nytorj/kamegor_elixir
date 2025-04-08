@@ -1,14 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 
 // Define interfaces for expected data structures
-interface UserData {
+export interface UserData { // Added export
     email: string;
     password?: string; // Optional for login response
     username?: string; // Optional for login response
     id?: number; // Optional, might be returned on registration/login
 }
 
-interface ProfileData {
+export interface ProfileData { // Added export
     id?: number;
     username?: string;
     description?: string;
@@ -19,31 +19,31 @@ interface ProfileData {
     location?: { latitude: number; longitude: number } | null;
 }
 
-interface SellerData {
+export interface SellerData { // Added export
     is_seller: boolean;
     description?: string;
 }
 
-interface LocationData {
+export interface LocationData { // Added export
     latitude: number;
     longitude: number;
 }
 
-interface LoginCredentials {
+export interface LoginCredentials { // Added export
     email: string;
     password: string;
 }
 
-interface LoginResponse {
+export interface LoginResponse { // Added export
     message: string;
     user_id?: number; // Assuming backend might return this
 }
 
-interface LogoutResponse {
+export interface LogoutResponse { // Added export
     message: string;
 }
 
-interface MapSeller {
+export interface MapSeller { // Added export
     id: number;
     user_id: number;
     username: string;
@@ -69,8 +69,9 @@ const apiClient: AxiosInstance = axios.create({
 
 export const registerUser = async (userData: UserData): Promise<UserData> => {
     try {
-        const response = await apiClient.post<{ user: UserData }>('/users', { user: userData });
-        return response.data.user; // Assuming backend returns the created user under 'user' key
+        // Backend returns user data directly now, not nested under 'user'
+        const response = await apiClient.post<UserData>('/users', { user: userData });
+        return response.data;
     } catch (error: any) {
         console.error('Registration Error:', error.response?.data || error.message);
         throw error.response?.data || new Error('Registration failed');
@@ -104,8 +105,9 @@ export const logoutUser = async (): Promise<LogoutResponse> => {
 
 export const updateSellerStatus = async (sellerData: SellerData): Promise<ProfileData> => {
     try {
-        const response = await apiClient.put<{ profile: ProfileData }>('/profiles/me/seller', { profile: sellerData });
-        return response.data.profile; // Assuming backend returns updated profile under 'profile'
+        // Assuming backend returns updated profile directly
+        const response = await apiClient.put<ProfileData>('/profiles/me/seller', { profile: sellerData });
+        return response.data;
     } catch (error: any) {
         console.error('Update Seller Status Error:', error.response?.data || error.message);
         throw error.response?.data || new Error('Update seller status failed');
@@ -114,8 +116,9 @@ export const updateSellerStatus = async (sellerData: SellerData): Promise<Profil
 
 export const updateLocation = async (locationData: LocationData): Promise<ProfileData> => {
     try {
-        const response = await apiClient.post<{ profile: ProfileData }>('/location', locationData);
-        return response.data.profile; // Assuming backend returns updated profile under 'profile'
+        // Assuming backend returns updated profile directly
+        const response = await apiClient.post<ProfileData>('/location', locationData);
+        return response.data;
     } catch (error: any) {
         console.error('Update Location Error:', error.response?.data || error.message);
         throw error.response?.data || new Error('Update location failed');
