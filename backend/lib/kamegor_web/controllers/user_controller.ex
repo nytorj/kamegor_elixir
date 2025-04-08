@@ -1,30 +1,30 @@
-<![CDATA[defmodule KamegorWeb.UserController do
+defmodule KamegorWeb.UserController do
   use KamegorWeb, :controller
 
   alias Kamegor.Accounts
-  alias Kamegor.Accounts.User
+  alias KamegorWeb.UserJSON
+  alias KamegorWeb.ChangesetJSON
 
-  action_fallback KamegorWeb.FallbackController
+  action_fallback(KamegorWeb.FallbackController)
 
   def create(conn, %{"user" => user_params}) do
     case Accounts.register_user(user_params) do
       {:ok, user} ->
-        # Optionally preload profile if needed in response
-        # user = Kamegor.Repo.preload(user, :profile)
-
         conn
         |> put_status(:created)
-        # Consider what user data to return. Avoid sending password_hash.
-        |> render("user.json", user: Map.from_struct(user) |> Map.drop([:password_hash, :__meta__, :profile])) # Example: return basic user info
+        # Keep standard render for success
+        |> render(UserJSON, "user.json", user: user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        # Manually render the error JSON using the view, passing assigns as a MAP
+        # Pass as map
+        error_json = ChangesetJSON.render("error.json", %{changeset: changeset})
+
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(json: KamegorWeb.ChangesetJSON)
-        |> render(:error, changeset: changeset)
+        |> put_resp_content_type("application/json")
+        |> send_resp(:unprocessable_entity, Jason.encode!(error_json))
+        |> halt()
     end
   end
-
-  # Add other actions (show, update, delete) as needed
 end
-]]>

@@ -1,31 +1,42 @@
-<![CDATA[defmodule KamegorWeb.ProfileController do
+defmodule KamegorWeb.ProfileController do
   use KamegorWeb, :controller
 
   alias Kamegor.Accounts
   alias Kamegor.Accounts.Profile
-  alias KamegorWeb.Endpoint # Added for broadcast
+  # Added for broadcast
+  alias KamegorWeb.Endpoint
 
-  action_fallback KamegorWeb.FallbackController
+  action_fallback(KamegorWeb.FallbackController)
 
   def update_seller(conn, %{"profile" => seller_params}) do
     user_id = get_session(conn, :current_user_id)
 
     if user_id do
-      user = Accounts.get_user_by_email(user_id)
-      profile = user.profile
+      # Use get_user_by_id which preloads profile
+      user = Accounts.get_user_by_id(user_id)
 
-      case Accounts.update_profile_seller(profile, seller_params) do
-        {:ok, updated_profile} ->
-          # TODO: Broadcast presence/status change if is_seller toggled?
-          conn
-          |> put_status(:ok)
-          |> render(KamegorWeb.ProfileJSON, "profile.json", profile: updated_profile)
+      # Check if user and profile exist
+      if user && user.profile do
+        profile = user.profile
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> put_view(json: KamegorWeb.ChangesetJSON)
-          |> render(:error, changeset: changeset)
+        case Accounts.update_profile_seller(profile, seller_params) do
+          {:ok, updated_profile} ->
+            # TODO: Broadcast presence/status change if is_seller toggled?
+            conn
+            |> put_status(:ok)
+            |> render(KamegorWeb.ProfileJSON, "profile.json", profile: updated_profile)
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> put_view(json: KamegorWeb.ChangesetJSON)
+            |> render(:error, changeset: changeset)
+        end
+      else
+        # Handle case where user or profile not found for the ID in session
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User profile not found"})
       end
     else
       conn
@@ -40,9 +51,9 @@
 
     with {:ok, lat} <- parse_float(lat_str),
          {:ok, lon} <- parse_float(lon_str),
-         user when not is_nil(user) <- Accounts.get_user_by_email(user_id),
+         # Use get_user_by_id which preloads profile
+         user when not is_nil(user) <- Accounts.get_user_by_id(user_id),
          profile when not is_nil(profile) <- user.profile do
-
       # Ensure only sellers can update location
       if profile.is_seller do
         changeset = Profile.location_changeset(profile, %{latitude: lat, longitude: lon})
@@ -69,6 +80,7 @@
         |> json(%{error: "User is not a seller"})
       end
     else
+      # Handle parsing errors or user not found
       _ ->
         conn
         |> put_status(:bad_request)
@@ -94,9 +106,10 @@
     # Ideally, broadcast only to relevant viewport topics.
     payload = %{
       event: "location_update",
-      seller: KamegorWeb.MapJSON.render("sellers.json", sellers: [profile]).data |> List.first() # Reuse MapJSON rendering
+      # Reuse MapJSON rendering, ensure it handles a single profile
+      seller: KamegorWeb.MapJSON.render("sellers.json", sellers: [profile]).data |> List.first()
     }
+
     Endpoint.broadcast("map_updates", "location_update", payload)
   end
 end
-]]>

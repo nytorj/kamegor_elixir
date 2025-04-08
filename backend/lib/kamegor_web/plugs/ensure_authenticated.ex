@@ -1,7 +1,5 @@
 defmodule KamegorWeb.Plugs.EnsureAuthenticated do
   import Plug.Conn
-  # Import redirect/halt correctly
-  import Phoenix.Controller, only: [redirect: 2, halt: 1]
 
   def init(opts), do: opts
 
@@ -9,19 +7,14 @@ defmodule KamegorWeb.Plugs.EnsureAuthenticated do
     user_id = get_session(conn, :current_user_id)
 
     if user_id do
-      # Optionally fetch user and assign to conn if needed downstream
-      # user = Kamegor.Accounts.get_user_by_id(user_id)
-      # assign(conn, :current_user, user)
+      # User is authenticated, pass the connection along
+      # Optionally assign user if needed: assign(conn, :current_user, Accounts.get_user_by_id(user_id))
       conn
     else
+      # User is not authenticated, send 401 and halt
       conn
-      # Send 401 status
-      |> put_status(:unauthorized)
-      # Use ErrorJSON view
-      |> put_view(json: KamegorWeb.ErrorJSON)
-      # Render error message
-      |> render(:"401", message: "Unauthorized")
-      # Halt the connection
+      |> put_resp_content_type("application/json")
+      |> send_resp(:unauthorized, Jason.encode!(%{error: "Unauthorized"}))
       |> halt()
     end
   end

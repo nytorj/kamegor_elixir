@@ -1,4 +1,4 @@
-<![CDATA[defmodule KamegorWeb.MapJSON do
+defmodule KamegorWeb.MapJSON do
   alias Kamegor.Accounts.Profile
 
   @doc """
@@ -25,6 +25,7 @@
   defp format_location(%Geo.Point{coordinates: {lon, lat}}) do
     %{latitude: lat, longitude: lon}
   end
-  defp format_location(_), do: nil # Handle nil location
+
+  # Handle nil location
+  defp format_location(_), do: nil
 end
-]]>

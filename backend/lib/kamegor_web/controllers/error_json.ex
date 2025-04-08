@@ -1,4 +1,4 @@
-<![CDATA[defmodule KamegorWeb.ErrorJSON do
+defmodule KamegorWeb.ErrorJSON do
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.
   # def render("500.json", _assigns) do
@@ -16,7 +16,10 @@
   # Renders the default template for other status codes.
   # If we specify a :message assign, include it in the details.
   def render(status, assigns) do
-    %{errors: %{detail: assigns[:message] || Phoenix.Controller.status_message_from_template(status)}}
+    %{
+      errors: %{
+        detail: assigns[:message] || Phoenix.Controller.status_message_from_template(status)
+      }
+    }
   end
 end
-]]>

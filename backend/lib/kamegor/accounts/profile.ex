@@ -8,7 +8,8 @@ defmodule Kamegor.Accounts.Profile do
   # Define the schema matching the profiles table
   schema "profiles" do
     field(:username, :string)
-    field(:description, :text)
+    # Changed from :text
+    field(:description, :string)
     field(:is_seller, :boolean, default: false)
     field(:rating_avg, :float, default: 0.0)
     field(:presence_status, :string, default: "offline")
@@ -59,8 +60,11 @@ defmodule Kamegor.Accounts.Profile do
   """
   def location_changeset(profile, attrs) do
     # Expecting attrs like %{latitude: lat, longitude: lon}
+    lat = Map.get(attrs, :latitude)
+    lon = Map.get(attrs, :longitude)
+
     # We need to convert this to a Geo.Point for the location_geom field
-    case Map.get(attrs, :latitude), Map.get(attrs, :longitude) do
+    case {lat, lon} do
       {lat, lon} when is_number(lat) and is_number(lon) ->
         # WGS 84
         point = %Geo.Point{coordinates: {lon, lat}, srid: 4326}
@@ -71,11 +75,10 @@ defmodule Kamegor.Accounts.Profile do
       # Add validation if needed
       _ ->
         # Add an error if lat/lon are missing or invalid
-        add_error(
-          profile |> cast(attrs, []),
-          :location_geom,
-          "Invalid latitude/longitude provided"
-        )
+        # Cast attrs first to ensure changeset structure is valid before adding error
+        # Cast with empty allowed fields initially
+        changeset = cast(profile, attrs, [])
+        add_error(changeset, :location_geom, "Invalid latitude/longitude provided")
     end
   end
 

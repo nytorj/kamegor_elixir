@@ -1,9 +1,10 @@
 defmodule KamegorWeb.PresenceChannel do
   use Phoenix.Channel
+  # Alias Phoenix.Presence itself
   alias Phoenix.Presence
-  # Added
+  # Alias our specific Presence module
+  alias KamegorWeb.Presence
   alias Kamegor.Accounts
-  # Added
   alias KamegorWeb.Endpoint
 
   # Define a topic for presence events
@@ -11,7 +12,8 @@ defmodule KamegorWeb.PresenceChannel do
   # Topic for general map updates
   @broadcast_topic "map_updates"
 
-  def join(topic, params, socket) do
+  # Marked topic as unused
+  def join(_topic, params, socket) do
     # For MVP, assuming user_id is passed in params for simplicity
     if user_id = params["user_id"] do
       # In real app, authenticate user properly here (e.g., token auth)
@@ -45,7 +47,7 @@ defmodule KamegorWeb.PresenceChannel do
     # Update DB status to "online"
     Accounts.update_presence_status(user.profile, "online")
 
-    # Track presence
+    # Track presence using our Presence module
     Presence.track(socket,
       list: @topic,
       # Use user_id as presence key
@@ -70,7 +72,7 @@ defmodule KamegorWeb.PresenceChannel do
     # Update DB status to "offline"
     Accounts.update_presence_status(user.profile, "offline")
 
-    # Untrack presence
+    # Untrack presence using our Presence module
     Presence.untrack(socket,
       list: @topic,
       key: user.id
@@ -97,11 +99,11 @@ defmodule KamegorWeb.PresenceChannel do
   #   {:noreply, socket}
   # end
 
-  # Presence notifications (broadcast to channel subscribers)
-  def handle_info(%Presence.Diff{event: event, presence: presence}, socket) do
-    push(socket, "presence_diff", %{event: event, presence: presence})
-    {:noreply, socket}
-  end
+  # Removed the handle_info clause for Phoenix.Presence.Diff for now
+  # def handle_info(%Phoenix.Presence.Diff{joins: joins, leaves: leaves}, socket) do
+  #   push(socket, "presence_diff", %{joins: joins, leaves: leaves})
+  #   {:noreply, socket}
+  # end
 
   # Ignore other messages
   def handle_info(_msg, socket), do: {:noreply, socket}

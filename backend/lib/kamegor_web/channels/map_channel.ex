@@ -11,33 +11,35 @@ defmodule KamegorWeb.MapChannel do
   # Topic for general updates
   @broadcast_topic "map_updates"
 
-  def join(topic, _params, socket) when topic |> String.starts_with?(@topic_prefix) do
-    # TODO: Authenticate user if needed for map viewing
+  def join(topic, _params, socket) do
+    # Check topic prefix inside the function body
+    if topic |> String.starts_with?(@topic_prefix) do
+      # TODO: Authenticate user if needed for map viewing
 
-    # Parse viewport from topic
-    case parse_viewport_topic(topic) do
-      {:ok, viewport} ->
-        # Subscribe to general map updates
-        Endpoint.subscribe(@broadcast_topic)
+      # Parse viewport from topic
+      case parse_viewport_topic(topic) do
+        {:ok, viewport} ->
+          # Subscribe to general map updates
+          Endpoint.subscribe(@broadcast_topic)
 
-        # Fetch initial sellers for the viewport
-        sellers = Accounts.list_sellers_in_viewport(viewport.center, viewport.radius)
+          # Fetch initial sellers for the viewport
+          sellers = Accounts.list_sellers_in_viewport(viewport.center, viewport.radius)
 
-        # Send initial list to the joining client
-        push(socket, "sellers_list", MapJSON.render("sellers.json", sellers: sellers))
+          # Send initial list to the joining client
+          push(socket, "sellers_list", MapJSON.render("sellers.json", sellers: sellers))
 
-        # Store viewport in assigns for filtering broadcasts
-        socket = assign(socket, :viewport, viewport)
+          # Store viewport in assigns for filtering broadcasts
+          socket = assign(socket, :viewport, viewport)
 
-        {:ok, socket}
+          {:ok, socket}
 
-      {:error, _reason} ->
-        {:error, %{reason: "invalid_viewport_topic"}}
+        {:error, _reason} ->
+          {:error, %{reason: "invalid_viewport_topic"}}
+      end
+    else
+      # Topic doesn't match the expected prefix
+      {:error, %{reason: "invalid_topic"}}
     end
-  end
-
-  def join(_topic, _params, _socket) do
-    {:error, %{reason: "invalid_topic"}}
   end
 
   # Handle incoming messages if needed (e.g., client updating their viewport)
@@ -104,7 +106,8 @@ defmodule KamegorWeb.MapChannel do
 
   defp parse_float(str) do
     case Float.parse(str) do
-      {float, _} -> {:ok, float}
+      # Ensure the entire string was parsed
+      {float, ""} -> {:ok, float}
       _ -> {:error, :invalid_float}
     end
   end

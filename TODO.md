@@ -62,7 +62,7 @@
         *   [x] Implement Signup Screen UI.
         *   [x] Implement Login Screen UI.
         *   [x] Implement API client module to interact with backend auth endpoints.
-        *   [ ] Implement secure token storage (e.g., react-native-keychain).
+        *   [x] Implement secure token storage (e.g., react-native-keychain).
         *   [x] Implement basic authenticated routing (navigate to main app view after login).
         *   [ ] Implement basic Profile Settings screen (view basic info).
 

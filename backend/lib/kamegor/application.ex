@@ -12,6 +12,9 @@ defmodule Kamegor.Application do
       Kamegor.Repo,
       {DNSCluster, query: Application.get_env(:kamegor, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Kamegor.PubSub},
+      # Add Presence tracker
+      KamegorWeb.Presence,
+
       # Start a worker by calling: Kamegor.Worker.start_link(arg)
       # {Kamegor.Worker, arg},
       # Start to serve requests, typically the last entry

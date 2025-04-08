@@ -1,10 +1,20 @@
-<![CDATA[defmodule KamegorWeb.UserJSON do
-  alias Kamegor.Accounts.User
+defmodule KamegorWeb.UserJSON do
+  # alias Kamegor.Accounts.User # Alias might be unused now
 
   @doc """
   Renders a single user, excluding sensitive fields.
+  Handles potential error tuple passed incorrectly.
   """
+  def render("user.json", %{user: {:error, _changeset} = error_tuple}) do
+    # If we somehow receive an error tuple here, return an error structure
+    # This is a workaround for the unexpected rendering path
+    %{error: "Unexpected error structure received by UserJSON."}
+    # Alternatively, delegate to ChangesetJSON:
+    # KamegorWeb.ChangesetJSON.render("error.json", %{changeset: elem(error_tuple, 1)})
+  end
+
   def render("user.json", %{user: user}) do
+    # Original success path
     %{
       id: user.id,
       email: user.email
@@ -26,4 +36,3 @@
   # end
   # defp render_profile(_), do: nil
 end
-]]>

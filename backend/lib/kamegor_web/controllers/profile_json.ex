@@ -1,4 +1,4 @@
-<![CDATA[defmodule KamegorWeb.ProfileJSON do
+defmodule KamegorWeb.ProfileJSON do
   alias Kamegor.Accounts.Profile
 
   @doc """
@@ -17,4 +17,3 @@
     }
   end
 end
-]]>
