@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActivityIndicator, View, StyleSheet, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
@@ -31,9 +32,10 @@ const AuthNavigator = () => (
   </AuthStack.Navigator>
 );
 
-// Main App Navigator Stack (initially just the Map)
+// Main App Navigator Stack
 const MainNavigator = () => (
   <MainStack.Navigator screenOptions={{ headerShown: false }}>
+    {/* Use MapScreen here */}
     <MainStack.Screen name="Map" component={MapScreen} />
     {/* TODO: Add ProfileScreen, SettingsScreen etc. */}
   </MainStack.Navigator>
@@ -63,9 +65,11 @@ const AppNavigator = () => {
 // Main App component
 const App = () => {
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 };
 

@@ -1,17 +1,16 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import * as Keychain from 'react-native-keychain';
-import apiClient, { loginUser as apiLogin, logoutUser as apiLogout } from '../services/api'; // Import specific functions if needed, or use apiClient directly
+import apiClient, { loginUser as apiLogin, logoutUser as apiLogout } from '../services/api'; // Import from api.ts
 
 // Define the shape of the context value
 interface AuthContextType {
     userId: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<any>; // Consider a more specific return type if possible
+    login: (email: string, password: string) => Promise<any>;
     logout: () => Promise<void>;
 }
 
-// Create the context with a default value (null or a default object structure)
 const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
@@ -28,10 +27,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 const credentials = await Keychain.getGenericPassword();
                 if (credentials) {
                     console.log('Credentials successfully loaded for user ' + credentials.username);
-                    // TODO: Validate token/session if necessary
-                    setUserId(credentials.username); // Assuming username stores the user ID string
-                    // TODO: Set auth header if using token auth
-                    // apiClient.defaults.headers.common['Authorization'] = `Bearer ${credentials.password}`;
+                    setUserId(credentials.username);
                 } else {
                     console.log('No credentials stored.');
                 }
@@ -47,38 +43,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const login = async (email: string, password: string): Promise<any> => {
         try {
-            // Use the imported apiLogin or call apiClient directly
             const result = await apiClient.post('/sessions', { session: { email, password } });
             const loggedInUserId = result.data?.user_id;
 
             if (loggedInUserId) {
                 const userIdStr = loggedInUserId.toString();
                 setUserId(userIdStr);
-                await Keychain.setGenericPassword(userIdStr, 'session'); // Store user ID as string
+                await Keychain.setGenericPassword(userIdStr, 'session');
                 console.log('Credentials saved for user ' + userIdStr);
             } else {
-                setUserId('authenticated'); // Placeholder if no ID returned but login succeeded
+                setUserId('authenticated'); // Placeholder
                 console.log('Login successful, session cookie likely set.');
             }
-            // TODO: Handle token storage/header if using token auth
             return result.data;
         } catch (error: any) {
             console.error('AuthContext Login Error:', error);
-            // Rethrow a structured error if possible
             throw error.response?.data || error;
         }
     };
 
     const logout = async (): Promise<void> => {
         try {
-            await apiLogout(); // Use imported apiLogout or apiClient.delete
+            await apiLogout();
         } catch (error) {
             console.error('API Logout Error:', error);
         } finally {
             setUserId(null);
             await Keychain.resetGenericPassword();
-            // TODO: Clear auth token header if using token auth
-            // delete apiClient.defaults.headers.common['Authorization'];
             console.log('Credentials reset.');
         }
     };
@@ -98,7 +89,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     );
 };
 
-// Custom hook to use the auth context
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (context === null) {

@@ -22,19 +22,20 @@ defmodule Kamegor.Accounts do
     # Use atom keys
     user_attrs = Map.take(atom_attrs, [:email, :password])
 
+    # Restore transaction and profile creation
     Repo.transaction(fn ->
       case User.changeset(%User{}, user_attrs) do
         %Ecto.Changeset{valid?: true} = user_changeset ->
           case Repo.insert(user_changeset) do
             {:ok, user} ->
-              # Add user_id to profile attributes
+              Logger.debug("User created in DB: ID=#{user.id}, Email=#{user.email}")
               profile_attrs_with_user_id = Map.put(profile_attrs, :user_id, user.id)
 
               case Profile.changeset(%Profile{}, profile_attrs_with_user_id) do
                 %Ecto.Changeset{valid?: true} = profile_changeset ->
                   case Repo.insert(profile_changeset) do
                     {:ok, _profile} ->
-                      Logger.debug("User and Profile created: ID=#{user.id}, Email=#{user.email}")
+                      Logger.debug("Profile created for User ID=#{user.id}")
                       # Return the created user
                       {:ok, user}
 
@@ -61,12 +62,12 @@ defmodule Kamegor.Accounts do
   end
 
   @doc """
-  Returns the user with the given email.
+  Returns the user with the given email. (No profile preload)
   Returns nil if no user is found.
   """
   def get_user_by_email(email) do
+    # Removed preload again to avoid PostGIS type error during login
     Repo.get_by(User, email: email)
-    # |> Repo.preload(:profile) # Keep commented out for now
   end
 
   @doc """
@@ -74,6 +75,8 @@ defmodule Kamegor.Accounts do
   Returns nil if no user is found.
   """
   def get_user_by_id(id) do
+    # Note: This might still fail if called before PostGIS types are ready,
+    # depending on when/how it's used.
     Repo.get(User, id)
     |> Repo.preload(:profile)
   end
@@ -83,12 +86,14 @@ defmodule Kamegor.Accounts do
   Returns the user if authentication is successful, otherwise nil.
   """
   def authenticate_user(email, password) do
+    # Fetches user WITHOUT profile
     user = get_user_by_email(email)
     Logger.debug("Authenticating user: #{inspect(email)}. Found user: #{!is_nil(user)}")
 
     cond do
       user && Bcrypt.verify_pass(password, user.password_hash) ->
         Logger.debug("Password verified for user: #{inspect(email)}")
+        # Return user without profile preloaded
         user
 
       user ->
@@ -130,7 +135,7 @@ defmodule Kamegor.Accounts do
 
     query =
       from(p in Profile,
-        join: u in assoc(p, :user),
+        # join: u in assoc(p, :user), # Removed join as user data not selected
         where: p.is_seller == true,
         where: p.presence_status in ["online", "streaming"],
         where: fragment("ST_DWithin(?, ?, ?)", p.location_geom, ^user_location, ^radius_degrees),

@@ -11,6 +11,8 @@ config :kamegor,
   ecto_repos: [Kamegor.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+# Removed :postgrex config block
+
 # Configures the endpoint
 config :kamegor, KamegorWeb.Endpoint,
   url: [host: "localhost"],

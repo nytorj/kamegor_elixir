@@ -1,14 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 
 // Define interfaces for expected data structures
-export interface UserData { // Added export
+export interface UserData {
     email: string;
-    password?: string; // Optional for login response
-    username?: string; // Optional for login response
-    id?: number; // Optional, might be returned on registration/login
+    password?: string;
+    username?: string;
+    id?: number;
 }
 
-export interface ProfileData { // Added export
+export interface ProfileData {
     id?: number;
     username?: string;
     description?: string;
@@ -19,42 +19,40 @@ export interface ProfileData { // Added export
     location?: { latitude: number; longitude: number } | null;
 }
 
-export interface SellerData { // Added export
+export interface SellerData {
     is_seller: boolean;
     description?: string;
 }
 
-export interface LocationData { // Added export
+export interface LocationData {
     latitude: number;
     longitude: number;
 }
 
-export interface LoginCredentials { // Added export
+export interface LoginCredentials {
     email: string;
     password: string;
 }
 
-export interface LoginResponse { // Added export
+export interface LoginResponse {
     message: string;
-    user_id?: number; // Assuming backend might return this
+    user_id?: number;
 }
 
-export interface LogoutResponse { // Added export
+export interface LogoutResponse {
     message: string;
 }
 
-export interface MapSeller { // Added export
+export interface MapSeller {
     id: number;
     user_id: number;
     username: string;
     rating_avg: number;
     presence_status: 'online' | 'offline' | 'streaming';
     location: { latitude: number; longitude: number } | null;
-    // pic_url?: string; // Add later if needed
 }
 
-// TODO: Replace with your actual backend URL, potentially from environment variables
-const API_BASE_URL: string = 'http://localhost:4000/api'; // Default Phoenix dev port
+const API_BASE_URL: string = 'http://localhost:4000/api';
 
 const apiClient: AxiosInstance = axios.create({
     baseURL: API_BASE_URL,
@@ -62,14 +60,12 @@ const apiClient: AxiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
-    // withCredentials: true, // Important for session-based auth if backend/frontend are on different origins
 });
 
 // --- Authentication Endpoints ---
 
 export const registerUser = async (userData: UserData): Promise<UserData> => {
     try {
-        // Backend returns user data directly now, not nested under 'user'
         const response = await apiClient.post<UserData>('/users', { user: userData });
         return response.data;
     } catch (error: any) {
@@ -98,14 +94,10 @@ export const logoutUser = async (): Promise<LogoutResponse> => {
     }
 };
 
-
 // --- Profile Endpoints ---
-
-// TODO: Add function to set auth token/header if using token-based auth
 
 export const updateSellerStatus = async (sellerData: SellerData): Promise<ProfileData> => {
     try {
-        // Assuming backend returns updated profile directly
         const response = await apiClient.put<ProfileData>('/profiles/me/seller', { profile: sellerData });
         return response.data;
     } catch (error: any) {
@@ -116,7 +108,6 @@ export const updateSellerStatus = async (sellerData: SellerData): Promise<Profil
 
 export const updateLocation = async (locationData: LocationData): Promise<ProfileData> => {
     try {
-        // Assuming backend returns updated profile directly
         const response = await apiClient.post<ProfileData>('/location', locationData);
         return response.data;
     } catch (error: any) {
@@ -132,12 +123,11 @@ export const fetchSellersInViewport = async (lat: number, lon: number, radius: n
         const response = await apiClient.get<{ data: MapSeller[] }>('/map/sellers', {
             params: { lat, lon, radius }
         });
-        return response.data.data; // Backend wraps sellers in a "data" key
+        return response.data.data;
     } catch (error: any) {
         console.error('Fetch Sellers Error:', error.response?.data || error.message);
         throw error.response?.data || new Error('Fetching sellers failed');
     }
 };
-
 
 export default apiClient;

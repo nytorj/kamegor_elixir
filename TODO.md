@@ -85,15 +85,15 @@
         *   [x] Update Profile model to include `presence_status` (offline, online, streaming). Update this based on Presence tracking.
     *   [ ] **Frontend (React Native):**
         *   [ ] Implement Profile Settings screen section for Seller Opt-in (toggle, description input), calling the backend endpoint.
-        *   [ ] **Implement Map Screen:**
-            *   [ ] Integrate chosen Map library (Mapbox/Google Maps).
-            *   [ ] Request location permissions from the user.
-            *   [ ] Display user's current location on the map.
-            *   [ ] Connect to the map update WebSocket endpoint.
-            *   [ ] Fetch initial Sellers within viewport via API.
-            *   [ ] Render Seller profile picture markers on the map based on received data (API + WebSocket).
+        *   [x] **Implement Map Screen:**
+            *   [x] Integrate chosen Map library (Mapbox/Google Maps).
+            *   [x] Request location permissions from the user.
+            *   [x] Display user's current location on the map.
+            *   [x] Connect to the map update WebSocket endpoint.
+            *   [x] Fetch initial Sellers within viewport via API.
+            *   [x] Render Seller profile picture markers on the map based on received data (API + WebSocket).
             *   [ ] Update marker appearance based on Seller status (`online` vs. `streaming` - basic distinction for now).
-            *   [ ] Handle map panning/zooming: Fetch new Sellers for the updated viewport.
+            *   [x] Handle map panning/zooming: Fetch new Sellers for the updated viewport.
             *   [ ] Implement basic map marker clustering.
             *   [ ] Implement logic to periodically send Seller's current location to backend (`POST /api/location`) *only* if `is_seller` is true and app is foregrounded. (Use `react-native-geolocation-service` or similar).
         *   [ ] Implement tapping a map marker to show basic Seller info popup (username, status).

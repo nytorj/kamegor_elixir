@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../context/AuthContext'; // Import useAuth hook
-import { StackNavigationProp } from '@react-navigation/stack'; // Import navigation types
+import { useAuth } from '../context/AuthContext'; // Import from AuthContext.tsx
+import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define navigation param types (adjust based on your actual navigator)
+// Define navigation param types
 type AuthStackParamList = {
     Login: undefined;
     Signup: undefined;
@@ -19,7 +19,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { login } = useAuth(); // Get login function from context
+    const { login } = useAuth();
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -30,7 +30,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         try {
             await login(email, password);
             console.log('Login successful via context');
-            // Navigation is handled by AppNavigator
+            // Navigation handled by AppNavigator
         } catch (error: any) {
             console.error('Login failed:', error);
             const errorMessage = error?.message || error?.error || 'Invalid email or password.';

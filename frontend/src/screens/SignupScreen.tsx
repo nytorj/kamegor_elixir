@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { registerUser } from '../services/api'; // Import from api.ts
-import { StackNavigationProp } from '@react-navigation/stack'; // Import navigation types
+import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define navigation param types (adjust based on your actual navigator)
+// Define navigation param types
 type AuthStackParamList = {
     Login: undefined;
     Signup: undefined;
@@ -28,17 +28,20 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
         }
         setIsLoading(true);
         try {
+            // Pass correct structure expected by api.ts
             const userData = { email, password, username };
             const result = await registerUser(userData);
             console.log('Signup successful:', result);
             Alert.alert('Success', 'Account created successfully! Please log in.');
-            navigation.navigate('Login'); // Navigate to Login after successful signup
+            navigation.navigate('Login');
         } catch (error: any) {
             console.error('Signup failed:', error);
-            // Extract error message more robustly
-            const message = error?.errors?.email?.[0] // Example: Check for specific validation errors
-                || error?.message
-                || 'Could not create account.';
+            // Improved error message extraction for validation errors
+            const message = error?.errors
+                ? Object.entries(error.errors)
+                    .map(([field, messages]) => `${field} ${(messages as string[]).join(', ')}`)
+                    .join('\n')
+                : error?.message || 'Could not create account.';
             Alert.alert('Signup Failed', message);
         } finally {
             setIsLoading(false);
